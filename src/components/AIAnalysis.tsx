@@ -6,7 +6,7 @@ import { Loader2, Sparkles, ThumbsUp, ThumbsDown, Lightbulb, Tag, AlertCircle, T
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getFunctions, httpsCallable } from "firebase/functions";
-import { app } from "@/integrations/firebase/config";
+import app from "@/integrations/firebase/config";
 
 interface WordCloudItem {
   text: string;

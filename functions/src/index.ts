@@ -1,13 +1,21 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Initialize Firebase Admin
 admin.initializeApp();
 const db = admin.firestore();
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+// Lazy load Gemini AI to avoid initialization timeout
+let genAI: any = null;
+const getGenAI = async () => {
+    if (!genAI) {
+        const { GoogleGenerativeAI } = await import("@google/generative-ai");
+        genAI = new GoogleGenerativeAI(
+            functions.config().gemini?.api_key || process.env.GEMINI_API_KEY || ""
+        );
+    }
+    return genAI;
+};
 
 interface AnalysisResult {
     summary: string;
@@ -21,26 +29,13 @@ interface AnalysisResult {
     };
 }
 
-interface ReportResult {
-    title: string;
-    generatedAt: string;
-    sections: {
-        title: string;
-        content: string;
-    }[];
-    statistics: {
-        totalResponses: number;
-        averageRating: number;
-        completionRate: number;
-    };
-}
-
 /**
  * AI 응답 분석 Cloud Function
  * 설문 응답 데이터를 분석하여 요약, 주제, 추천사항 등을 생성합니다.
  */
 export const analyzeResponses = functions
     .region("asia-northeast3")
+    .runWith({ timeoutSeconds: 120, memory: "512MB" })
     .https.onCall(async (data, context) => {
         const { projectId } = data;
 
@@ -84,7 +79,8 @@ export const analyzeResponses = functions
                 .map((r) => r.rating_response);
 
             // Gemini AI로 분석
-            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+            const ai = await getGenAI();
+            const model = ai.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
             const prompt = `
 당신은 학교 평가 설문 분석 전문가입니다. 다음 설문 응답 데이터를 분석해주세요.
@@ -153,6 +149,7 @@ JSON 형식으로 응답해주세요:
  */
 export const generateReport = functions
     .region("asia-northeast3")
+    .runWith({ timeoutSeconds: 180, memory: "512MB" })
     .https.onCall(async (data, context) => {
         const { projectId } = data;
 
@@ -185,7 +182,6 @@ export const generateReport = functions
             const questionsSnapshot = await db
                 .collection("questions")
                 .where("project_id", "==", projectId)
-                .orderBy("order_index")
                 .get();
             const questions = questionsSnapshot.docs.map((doc) => ({
                 id: doc.id,
@@ -224,7 +220,8 @@ export const generateReport = functions
             });
 
             // Gemini AI로 보고서 생성
-            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+            const ai = await getGenAI();
+            const model = ai.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
             const textResponses = responses
                 .filter((r) => r.text_response)
@@ -284,26 +281,24 @@ JSON 형식으로 응답해주세요:
 
             const reportData = JSON.parse(jsonMatch[0]);
 
-            const report: ReportResult = {
-                title: reportData.title || `${school?.school_name || ""} 학교 평가 보고서`,
-                generatedAt: new Date().toISOString(),
-                sections: reportData.sections || [],
-                statistics: {
-                    totalResponses: responses.length,
-                    averageRating:
-                        questionStats
-                            .filter((q) => q.averageRating !== null)
-                            .reduce((sum, q) => sum + (q.averageRating || 0), 0) /
-                        questionStats.filter((q) => q.averageRating !== null).length || 0,
-                    completionRate: Math.round(
-                        (responses.length / (questions.length * 10)) * 100
-                    ),
-                },
-            };
-
             return {
                 success: true,
-                report,
+                report: {
+                    title: reportData.title || `${school?.school_name || ""} 학교 평가 보고서`,
+                    generatedAt: new Date().toISOString(),
+                    sections: reportData.sections || [],
+                    statistics: {
+                        totalResponses: responses.length,
+                        averageRating:
+                            questionStats
+                                .filter((q) => q.averageRating !== null)
+                                .reduce((sum, q) => sum + (q.averageRating || 0), 0) /
+                            questionStats.filter((q) => q.averageRating !== null).length || 0,
+                        completionRate: Math.round(
+                            (responses.length / (questions.length * 10)) * 100
+                        ),
+                    },
+                },
             };
         } catch (error) {
             console.error("보고서 생성 오류:", error);

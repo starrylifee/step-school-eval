@@ -5,7 +5,7 @@ import { Loader2, FileText, Copy, Check, Download, AlertCircle } from "lucide-re
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getFunctions, httpsCallable } from "firebase/functions";
-import { app } from "@/integrations/firebase/config";
+import app from "@/integrations/firebase/config";
 
 interface ReportSection {
   id: string;
