@@ -1,73 +1,72 @@
-# Welcome to your Lovable project
+# STEP - 학교평가 및 교육계획 수립 자동화 플랫폼
 
-## Project info
+STEP은 학교평가와 교육계획 수립을 자동화하여 교사의 업무 효율성을 극대화하는 통합 플랫폼입니다.
+복잡한 데이터를 손쉽게 수집, 분석하고 AI를 활용하여 의미 있는 인사이트를 도출합니다.
 
-**URL**: https://lovable.dev/projects/c4475490-9a46-42ec-9a57-d362b47f2baa
+## ✨ 주요 기능 (Key Features)
 
-## How can I edit this code?
+*   **📊 대시보드 (Dashboard)**: 학교 평가 진행 상황과 주요 지표를 한눈에 파악할 수 있습니다.
+*   **📝 설문조사 (Surveys)**: 학생, 학부모, 교사 대상 설문조사를 생성하고 배포하여 데이터를 수집합니다.
+*   **🤖 AI 분석 (AI Analysis)**: Google Gemini API를 활용하여 수집된 데이터를 심층 분석하고 개선점을 제안합니다.
+*   **📈 프로젝트 관리**: 학교별, 연도별 평가 프로젝트를 체계적으로 관리합니다.
+*   **📱 반응형 디자인**: PC와 모바일 어디서든 편리하게 접근 가능합니다.
 
-There are several ways of editing your application.
+## 🛠️ 기술 스택 (Tech Stack)
 
-**Use Lovable**
+### Frontend
+*   **Framework**: React (Vite)
+*   **Language**: TypeScript
+*   **Styling**: Tailwind CSS, shadcn/ui
+*   **State Management**: Tanstack Query
+*   **Routing**: React Router
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c4475490-9a46-42ec-9a57-d362b47f2baa) and start prompting.
+### Backend & Infrastructure
+*   **Database**: Firebase Firestore, Supabase
+*   **Serverless**: Firebase Cloud Functions
+*   **Hosting**: Firebase Hosting
+*   **AI**: Google Generative AI (Gemini)
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🌐 서비스 접속 (Service Access)
 
-**Use your preferred IDE**
+[https://step-school-eval.web.app](https://step-school-eval.web.app)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🔑 테스트 계정 (Test Account)
+*   **학교 코드 (School Code)**: `SD1004`
+*   **비밀번호 (Password)**: `1234`
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 시작하기 (Getting Started)
 
-Follow these steps:
+### 필수 요구사항 (Prerequisites)
+*   Node.js (v18 이상 권장)
+*   npm
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 설치 (Installation)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. 저장소를 클론합니다.
+   ```bash
+   git clone <repository-url>
+   cd <project-directory>
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2. 의존성을 설치합니다.
+   ```bash
+   npm install
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+3. 개발 서버를 실행합니다.
+   ```bash
+   npm run dev
+   ```
+
+## 📦 배포 (Deployment)
+
+이 프로젝트는 Firebase Hosting을 사용하여 배포됩니다.
+
+```bash
+npm run build
+firebase deploy
 ```
 
-**Edit a file directly in GitHub**
+## 📄 라이선스 (License)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/c4475490-9a46-42ec-9a57-d362b47f2baa) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Copyright © 2025 STEP. All rights reserved.
