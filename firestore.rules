@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 학교 데이터 - 읽기만 허용 (로그인용)
+    match /schools/{schoolId} {
+      allow read: if true;
+      allow write: if false; // 관리자만 콘솔에서 추가
+    }
+    
+    // 프로젝트 - 해당 학교만 CRUD 가능
+    match /projects/{projectId} {
+      allow read: if true;
+      allow create: if request.resource.data.school_id != null;
+      allow update, delete: if true;
+    }
+    
+    // 설문 링크 - 읽기/쓰기 허용
+    match /survey_links/{linkId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // 질문 - 읽기/쓰기 허용
+    match /questions/{questionId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // 응답 - 읽기/쓰기 허용 (설문 응답자용)
+    match /responses/{responseId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
